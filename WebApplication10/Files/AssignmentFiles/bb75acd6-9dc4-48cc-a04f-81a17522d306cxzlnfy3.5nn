@@ -1,0 +1,118 @@
+
+ALTER Procedure [dbo].[AddAssignment]
+@TeacherId int, 
+@EnrollmentId int,
+@Title nvarchar(100),
+@FileUrl nvarchar(250),
+@Instruction nvarchar(350), 
+@TotalMarks tinyint,
+@Deadline datetime2
+
+AS
+Begin
+	 Declare @CourseId int 
+	 Declare @AssignmentId int 
+	 Declare @Status  bit = 0 
+
+	 Select @CourseId = CourseId From TeacherEnrollements Where @TeacherId = UserId and @EnrollmentId = Id
+	 
+	 if IsNull(@CourseId,0)>0  or @TotalMarks between 0 and 100 
+	 Begin
+		Begin Transaction AddAssignment
+		BEGIN TRY
+		
+		Insert Into Assignments(FileUrl,Instruction,TotalMarks,CourseId,CreatedDate,Deadline,Title) 
+		Select @FileUrl,@Instruction,@TotalMarks,@CourseId,GETDATE(),@Deadline,@Title
+		
+		Select @AssignmentId = SCOPE_IDENTITY()
+		print @AssignmentId
+
+		Insert Into Assigneds(AssignmentId,StudentId)
+		Select @AssignmentId,UserId From StudentsEnrollments
+		Where CourseId = @CourseId
+
+		Set @Status = 1
+		Commit Transaction AddAssignment
+		END TRY
+		
+		BEGIN CATCH
+	
+		RollBack Transaction AddAssignment
+		END CATCH
+
+	 End
+		Select @Status As FlowStatus
+
+End
+
+
+
+
+
+
+
+
+
+ALTER Procedure [dbo].[SetMarksAndRemarks]
+@TeacherId int,
+@AssignmentId int,
+@AssignedId int,
+@ObtainMarks tinyint,
+@Remarks nvarchar(350)
+As
+Begin
+		Declare @Status bit = 0 
+		Declare @CheckTeacherId int = 0
+		Declare @CheckAssignmentId int = 0
+		Declare @CheckMarks tinyint = 0
+
+
+		Select @CheckAssignmentId = AssignmentId
+		From Assigneds 
+		Where Id = @AssignedId 
+
+		Select @CheckTeacherId = b.UserId, @CheckMarks = a.TotalMarks
+		From Assignments a 
+		Inner Join TeacherEnrollements b 
+		On a.Id = @AssignmentId
+	
+		if @TeacherId = @CheckTeacherId and @CheckAssignmentId =  @AssignmentId and @ObtainMarks <= @CheckMarks
+		Begin
+			 Update Assigneds Set ObtainMarks = @ObtainMarks,  Remarks = @Remarks 
+			 Where Id = @AssignedId
+			 Set @Status = 1
+		End
+		Select @Status As FlowStatus
+End
+
+
+
+
+
+
+ALTER Procedure [dbo].[SubmitAssignment]
+@StudentId int,
+@AssignedId int,
+@FileUrl nvarchar(250),
+@CommentORAnswer nvarchar(350)
+
+As
+
+Begin
+	Declare @Status bit = 0 
+	Declare @CurrentAssigned int = 0
+	Declare @CheckSubmittedDate datetime2 
+	Select @CurrentAssigned = Id, @CheckSubmittedDate = SubmitDate From Assigneds 
+	Where @StudentId = StudentId and @AssignedId = Id
+
+	if @CurrentAssigned>0 and IsNull(@CheckSubmittedDate,'') != ''
+	Begin
+		Update Assigneds Set FileUrl = @FileUrl, CommentOrAnswer = @CommentORAnswer , SubmitDate = GETDATE() Where Id = @CurrentAssigned
+		Set @Status = 1
+	End
+	Select @Status As FlowStatus
+End
+
+
+
+

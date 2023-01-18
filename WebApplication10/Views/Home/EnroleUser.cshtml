@@ -1,0 +1,123 @@
+﻿@{
+    var obj = new WebApplication10.DTO.EnrollmentDTO();
+   
+    ViewData["Title"] = "Enrole User";
+}
+@{
+    if (ViewData["message"] != null)
+    {
+    <p id="message2" style="color:red;text-align:center;"> @ViewData["message"]</p>
+    <script>
+                setTimeout(()=>{
+                document.getElementById("message2").style.display = "none"
+                },2000)
+    </script>
+    }
+
+}
+<div class="text-center">
+    <button id="enroleTeacherBtn" class="btn btn-primary m-4">Enrole Teacher</button>
+    <button id="enroleStudentBtn" class="btn btn-primary m-4">Enrole Student</button>
+</div>
+
+<div id="teacherEnrollmentForm" style="display:none">
+    <h4>Enter Teacher Enrollment Details</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form action="api/Enrollment/EnrollUser" method="post">
+                <br />
+                <div class="form-group">
+                    <label for="CourseId" class="control-label">Course List (Teacher Not Assigned)</label>
+                    <select name="CourseId" class="form-control">
+                        @{
+                            foreach (var item in ViewData["CourseWithoutTeacher"] as IEnumerable<Course>)
+                            {
+                                   <option value="@item.Id">@item.Title</option>
+                            }
+                        }
+                    </select>
+                </div> 
+                <br />
+                <div class="form-group">
+                    <label for="UserId" class="control-label">Teacher List</label>
+                    <select name="UserId" class="form-control">
+                        @{
+                            foreach (var item in ViewData["Teacher"] as IEnumerable<User>)
+                            {
+                                    <option value="@item.Id">@item.Email</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <br />
+                <div class="form-group">
+                    <button id="enroleUserBtn" class="btn btn-primary">Enrole Teacher</button>
+                    <input id="submitenroleUserBtn" type="submit" value="Login" class="btn btn-primary" hidden="hidden" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="studentEnrollmentForm" style="display:none">
+    <h4>Enter Student Enrollment Details</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form action="api/Enrollment/EnrollUser" method="post">
+                <br/>
+                <div class="form-group">
+                    <label for="CourseId" class="control-label">Course List</label>
+                    <select name="CourseId" class="form-control">
+                        @{
+                            foreach (var item in ViewData["Course"] as IEnumerable<Course>)
+                            {
+                                <option value="@item.Id">@item.Title</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <br/>
+                <div class="form-group">
+                    <label for="UserId" class="control-label">Student List</label>
+                    <select name="UserId" class="form-control">
+                        @{
+                            foreach (var item in ViewData["Student"] as IEnumerable<User>)
+                            {
+                                    <option value="@item.Id">@item.Email</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <br />
+                <div class="form-group">
+                    <button id="enroleUserBtn" class="btn btn-primary">Enrole Student</button>
+                    <input id="submitenroleUserBtn" type="submit" value="Login" class="btn btn-primary" hidden="hidden" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        let teacherEnrollmentForm = document.getElementById("teacherEnrollmentForm")
+        let studentEnrollmentForm = document.getElementById("studentEnrollmentForm")
+        let enroleTeacherBtn = document.getElementById("enroleTeacherBtn")
+        let enroleStudentBtn = document.getElementById("enroleStudentBtn")
+
+        enroleTeacherBtn.addEventListener("click", (e) => {
+            studentEnrollmentForm.style.display = "none"
+            teacherEnrollmentForm.style.display = "block"
+
+        })
+
+
+        enroleStudentBtn.addEventListener("click", (e) => {
+            teacherEnrollmentForm.style.display = "none"
+            studentEnrollmentForm.style.display = "block"
+        
+        })
+    </script>
+
+}

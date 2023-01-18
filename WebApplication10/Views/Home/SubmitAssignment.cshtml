@@ -1,0 +1,78 @@
+﻿@{
+    var obj = new WebApplication10.DTO.SubmitAssignmentDTO();
+    ViewData["Title"] = "Create Assignment Page";
+}
+<div class="text-center">
+    @{
+        if (ViewData["message"] != null)
+        {
+                                        <p id="message" style="color:red"> @ViewData["message"]</p>
+                                        <script>
+                                            setTimeout(() => {
+                                                document.getElementById("message").style.display = "none"
+                                            }, 2000)
+                                    </script>
+        }
+    }
+</div>
+@{
+    if (ViewData["Status"] != "p1")
+    {
+    <h4>Submit Assignment </h4>
+    <hr />
+    <div class="row">
+                                <div class="col-md-4">
+                                <form action="~/api/Assignment/SubmitAssignment" method="post" enctype="multipart/form-data">
+                                            <br />
+                                            <div class="form-group">
+                                                <label for="Files" class="control-label">Assignment File</label>
+                                                <input id="File" name="Files" type="file" class="form-control" />
+                                                <span id="FileError" class="text-danger"></span>
+
+                                            </div>
+                                            <br />
+                                        <div class="form-group">
+                                        <label for="CommentORAnswer" class="control-label">CommentORAnswer</label>
+                                            <input asp-for="@obj.CommentORAnswer" asp-short-name="true" class="form-control" />
+                                            <span asp-validation-for="@obj.CommentORAnswer" asp-short-name="true" class="text-danger"></span>
+                                        </div>
+                                        <br/>
+                                        <div class="form-group">
+                                            <input name="AssignedId" value="@ViewData["AssignedId"]" hidden="hidden" />
+                                        </div>
+                                        <div class="form-group">
+                                            <button id="submitAssignmentBtn" class="btn btn-primary">Submit</button>
+                                            <input id="submitSubmitAssignmentBtn" type="submit" value="" class="btn btn-primary" hidden="hidden" />
+                                        </div>
+                                    </form>
+                                </div>
+    </div>
+    }
+}
+
+
+
+@section Scripts {
+    <script>
+        let submitAssignmentBtn = document.getElementById("submitAssignmentBtn")
+        submitAssignmentBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            let CommentORAnswer = document.getElementById("CommentORAnswer")
+            CommentORAnswer.value = CommentORAnswer.value.trim()
+            let File = document.getElementById("File")
+            if (File.files.length != 0){
+            document.getElementById("submitSubmitAssignmentBtn").click();
+            }
+            else{
+                document.getElementById("FileError").innerText = "File Is Required";
+                setTimeout(()=>{
+                    document.getElementById("FileError").innerText = "";
+                },2000)
+            }
+
+        })
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

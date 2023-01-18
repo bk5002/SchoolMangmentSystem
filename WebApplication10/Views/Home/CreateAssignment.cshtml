@@ -1,0 +1,87 @@
+﻿@{
+    var obj = new WebApplication10.DTO.CreateAssignmentDTO();
+    ViewData["Title"] = "Create Assignment Page";
+}
+<div class="text-center">
+    @{
+        if (ViewData["message"] != null)
+        {
+            <p id="message" style="color:red"> @ViewData["message"]</p>
+            <script>
+                setTimeout(() => {
+                    document.getElementById("message").style.display = "none"
+                }, 2000)
+            </script>
+        }
+    }
+</div>
+
+    @if (ViewData["Status"]=="ok") {
+    <h4>Enter Assignment Details</h4>
+    <hr />
+        <div class="row">
+        <div class="col-md-4">
+            <form action="~/api/Assignment/CreateAssignment" method="post" enctype="multipart/form-data">
+                    <br />
+                    <div class="form-group">
+                        <label for="Title" class="control-label">Title</label>
+                        <input asp-for="@obj.Title" asp-short-name="true" class="form-control" />
+                        <span asp-validation-for="@obj.Title" asp-short-name="true" class="text-danger"></span>
+                    </div>
+                    <br />
+                <div class="form-group">
+                    <label for="Instruction" class="control-label">Instruction</label>
+                    <input asp-for="@obj.Instruction" asp-short-name="true" class="form-control" />
+                    <span asp-validation-for="@obj.Instruction" asp-short-name="true" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="Deadline" class="control-label">Deadline</label>
+                    <input asp-for="@obj.Deadline" asp-short-name="true" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="@obj.Deadline" asp-short-name="true" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="Files" class="control-label">Assignment File</label>
+                    <input name="Files" type="file" class="form-control"  />
+                </div>
+                <br/>
+                <div class="form-group">
+                    <label for="TotalMarks" class="control-label">TotalMarks</label>
+                    <input asp-for="@obj.TotalMarks" asp-short-name="true" type="number" class="form-control" multiple=false />
+                    <span asp-validation-for="@obj.TotalMarks" asp-short-name="true" class="text-danger"></span>
+
+                </div>
+                <br />
+                <div class="form-group">
+                    <input name="EnrollmentId" value="@ViewData["EnrollmentId"]" hidden="hidden" />
+                </div>
+                <div class="form-group">
+                    <button id="createAssignmentBtn" class="btn btn-primary">Create Assignment</button>
+                    <input id="submitCreateAssignmentBtn" type="submit" value="" class="btn btn-primary" hidden="hidden" />
+                </div>
+                </form>
+            </div>
+        </div>
+
+    }
+   
+
+@section Scripts {
+    <script>
+        let createAssignmentBtn = document.getElementById("createAssignmentBtn")
+        createAssignmentBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            let Title = document.getElementById("Title")
+            let Instruction = document.getElementById("Instruction")
+
+            Title.value = Title.value.trim()
+            Instruction.value = Instruction.value.trim()
+            document.getElementById("submitCreateAssignmentBtn").click();
+        })
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,28 @@
+EF:
+
+install-package Entity FrameWork
+
+create table class
+ public class Employee{
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+ }
+
+create database class: Dbcontext ==> add one or more DbSet
+ public class MyDb : DbContext { 
+        public DbSet<Employee> Employees { get; set; }
+ }
+
+set connection String
+<connectionStrings>
+		<add name="MyDb" connectionString="data source=.\SQLEXPRESS; initial catalog=CodeFirstDemo; integrated security=SSPI" providerName="System.Data.SqlClient"/>
+</connectionStrings>
+
+enable-migrations
+
+
+create migrations (EveryTime we make changes)
+add-migration nameofmigration
+
+update-DataBase (Run Migration)

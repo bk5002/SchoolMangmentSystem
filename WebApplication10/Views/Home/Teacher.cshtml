@@ -1,0 +1,21 @@
+﻿@{
+    
+    ViewData["Title"] = "Teacher Page";
+}
+
+<h3>Assigned Courses </h3>
+
+            <br />
+    @{
+        foreach (var item in ViewData["TeacherCourseList"] as IEnumerable<TeacherEnrollement>)
+        {
+
+        <a class="courseTitle" href="\Home\CourseDetails?id=@item.CourseId">@item.Course.Title</a> 
+          
+        <a class="text-secondary" href="\Home\EnrolledStudentList?id=@item.CourseId"> List Of Enrolled Students</a>
+            <br />
+            <br />
+            <br />
+        }
+    }
+

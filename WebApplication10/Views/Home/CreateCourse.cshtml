@@ -1,0 +1,62 @@
+﻿@{
+    var obj = new WebApplication10.DTO.CourseDTO();
+    ViewData["Title"] = "Create Course";
+
+}
+<h4>Enter Course Details</h4>
+<hr />
+@{
+    if (ViewData["message"] != null)
+    {
+        <p id="message" style="color:red"> @ViewData["message"]</p>
+        <script>
+            setTimeout(() => {
+                document.getElementById("message").style.display = "none"
+            }, 2000)
+        </script>
+    }
+}
+<div class="row">
+    <div class="col-md-4">
+        <form action="api/Course/Create" method="post">
+            <br />
+            <div class="form-group">
+                <label for="Title" class="control-label">Title</label>
+                <input asp-for="@obj.Title" asp-short-name="true" class="form-control" />
+                <span asp-validation-for="@obj.Title" asp-short-name="true" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="CreditHourse" class="control-label">CreditHourse</label>
+                <select name="CreditHourse" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+            <br />
+            <div class="form-group">
+                <button id="createCourseBtn" class="btn btn-primary">Create Course</button>
+                <input id="submitCreateCourseBtn" type="submit" value="Login" class="btn btn-primary" hidden="hidden" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        let createUserBtn = document.getElementById("createCourseBtn")
+        createUserBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            let NameTrim = document.getElementById("Title")
+            NameTrim.value = NameTrim.value.trim()
+            document.getElementById("submitCreateCourseBtn").click();
+
+        })
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
+

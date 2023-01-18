@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Course Detail Page";
+}
+
+<div class="text-center">
+    <br />
+    @{
+        if (ViewData["Status"] != "p2")
+        {
+            <a class="btn-primary" style="text-decoration:none;padding:10px;" href="\Home\CreateAssignment?id=@ViewData["CourseId"]">Create New Assignment</a>
+        }
+    }
+    <br />
+    <br />
+    @{
+        if (ViewData["Status"] == "p1")
+        {
+            <h1>No Assignment Available</h1>
+        }
+        else if (ViewData["Status"] == "okay")
+        {
+            foreach (var item in ViewData["TeacherAssignmetList"] as IEnumerable<Assignment>)
+            {
+                <div class="text-lg-start" style="border:2px solid black; padding:10px">
+                    <h4>@item.Title</h4>
+                    <p>@item.Instruction</p>
+                    <span>
+                        File Url:
+                    </span>
+                    @{
+                        if (@item.FileUrl == "")
+                        {
+                            <span style="color:red;border">None</span>
+                        }
+                        else
+                        {
+                            <a href="/api/assignment/download?id=@item.Id">Click Here </a>
+                        }
+                    }
+                    <br />
+                    <span>
+                        Total Marks: <strong>@item.TotalMarks</strong>
+                    </span>
+                    <div class="text-end">
+                        <a href="SubmitionList?id=@item.CourseId"><strong>Submition List</strong></a>
+                    </div>
+                </div>
+                
+                <br />
+                <br />
+
+            }
+        }
+    }
+</div>
+
+@section Scripts {
+
+
+}
